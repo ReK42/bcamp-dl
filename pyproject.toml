@@ -1,0 +1,91 @@
+#########################
+# Project and Packaging #
+#########################
+[project]
+name = "bcamp-dl"
+version = "1.0.0"
+description = "Download your collection from Bandcamp."
+requires-python = ">=3.10"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "ReK42", email = "ReK42@users.noreply.github.com"},
+]
+maintainers = [
+    {name = "ReK42", email = "ReK42@users.noreply.github.com"},
+]
+keywords = ["bandcamp", "music"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: System :: Archiving",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+dependencies = [
+    "browser-cookie3 == 0.19.1",
+    "bs4 == 0.0.1",
+    "requests == 2.27.1",
+    "rich == 13.4.2"
+]
+
+[project.urls]
+Repository = "https://github.com/ReK42/bcamp-dl"
+Issues = "https://github.com/ReK42/bcamp-dl/issues"
+
+[project.scripts]
+bcamp-dl = "bcamp_dl.cli:main"
+
+[project.optional-dependencies]
+tests = [
+    "black == 23.7.0",
+    "mypy == 1.4.1",
+    "ruff == 0.0.278",
+    "types-beautifulsoup4",
+    "types-requests",
+]
+
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bcamp_dl = ["py.typed"]
+
+[tool.setuptools_scm]
+
+###########################
+# Development Environment #
+###########################
+[tool.black]
+
+[tool.mypy]
+cache_dir = ".cache/mypy"
+
+[[tool.mypy.overrides]]
+module = "browser_cookie3"
+ignore_missing_imports = true
+
+[tool.ruff]
+src = ["src"]
+cache-dir = ".cache/ruff"
+ignore = ["E501"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
