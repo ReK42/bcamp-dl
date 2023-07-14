@@ -28,7 +28,7 @@ env:
 jobs:
   test:
     name: Test
-    uses: ReK42/bcamp-dl/.github/workflows/test.yml@${{ github.sha }}
+    uses: ./.github/workflows/test.yml
 
   build:
     name: Build
