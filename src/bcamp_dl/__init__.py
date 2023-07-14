@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 """Download your collection from Bandcamp."""
-_name = __name__
-_version = "1.0.0"  # https://peps.python.org/pep-0440/
-_copyright = "Copyright (c) 2023 ReK42"
-
 __all__ = []
 
 
@@ -14,6 +10,8 @@ def export(defn):
     return defn
 
 
+__copyright__ = "Copyright (c) 2023 ReK42"
+from bcamp_dl._version import __version__
 from bcamp_dl.bcamp_dl import (
     BandcampDownloader,
     MAX_THREADS,

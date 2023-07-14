@@ -8,9 +8,9 @@ from argparse import ArgumentParser, ArgumentTypeError, RawTextHelpFormatter
 from pathlib import Path
 
 from bcamp_dl import (
-    _name,
-    _version,
-    _copyright,
+    __name__,
+    __version__,
+    __copyright__,
     BandcampDownloader,
     MAX_THREADS,
     ALBUM_INFO_KEYS,
@@ -80,7 +80,7 @@ def path_is_writable_file(arg: str) -> Path:
 def main() -> None:
     """Script entry point."""
     parser = ArgumentParser(
-        prog=_name,
+        prog=__name__,
         add_help=False,
         description=(
             "Download your collection from Bandcamp.\n"
@@ -192,7 +192,7 @@ def main() -> None:
         "--version",
         action="version",
         help="Show version information and exit",
-        version=f"{_name} v{_version}: {_copyright}",
+        version=f"{__name__} v{__version__} {__copyright__}",
     )
     args = parser.parse_args()
     with BandcampDownloader(**vars(args)) as app:
