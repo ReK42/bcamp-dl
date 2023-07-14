@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Download your collection from Bandcamp."""
 import os
 import sys
@@ -23,8 +22,8 @@ def int_positive(arg: str) -> int:
     """Validate an integer is positive."""
     try:
         i = int(arg)
-    except ValueError:
-        raise ArgumentTypeError("Must be an integer")
+    except ValueError as e:
+        raise ArgumentTypeError("Must be an integer") from e
     if i < 0:
         raise ArgumentTypeError("Integer must be positive")
     return i
@@ -34,8 +33,8 @@ def float_positive(arg: str) -> float:
     """Validate a float is positive."""
     try:
         f = float(arg)
-    except ValueError:
-        raise ArgumentTypeError("Must be a float")
+    except ValueError as e:
+        raise ArgumentTypeError("Must be a float") from e
     if f < 0:
         raise ArgumentTypeError("Float must be positive")
     return f
@@ -45,8 +44,8 @@ def num_threads(arg: str) -> int:
     """Validate an given number of threads is supported."""
     try:
         i = int(arg)
-    except ValueError:
-        raise ArgumentTypeError("Must be an integer")
+    except ValueError as e:
+        raise ArgumentTypeError("Must be an integer") from e
     if i < 0:
         raise ArgumentTypeError("Integer must be positive")
     if i > MAX_THREADS:
@@ -58,8 +57,8 @@ def path_is_writable_file(arg: str) -> Path:
     """Validate that a path is a writable file."""
     try:
         p = Path(arg)
-    except ValueError:
-        raise ArgumentTypeError("Must be a path")
+    except ValueError as e:
+        raise ArgumentTypeError("Must be a path") from e
     if p.exists():
         if not p.is_file():
             raise ArgumentTypeError("Path exists but is not a file")
@@ -68,11 +67,11 @@ def path_is_writable_file(arg: str) -> Path:
     else:
         if not p.parent.is_dir():
             raise ArgumentTypeError(
-                "File does not exist and parent directory does not exist"
+                "File does not exist and parent directory does not exist",
             )
         if not os.access(p.parent, os.W_OK):
             raise ArgumentTypeError(
-                "File does not exist and parent directory is not writable"
+                "File does not exist and parent directory is not writable",
             )
     return p
 
@@ -93,7 +92,10 @@ def main() -> None:
         formatter_class=RawTextHelpFormatter,
     )
     parser.add_argument(
-        "username", type=str, metavar="USERNAME", help="Bandcamp username"
+        "username",
+        type=str,
+        metavar="USERNAME",
+        help="Bandcamp username",
     )
     parser.add_argument(
         "-b",
@@ -179,14 +181,22 @@ def main() -> None:
         ),
     )
     parser.add_argument(
-        "--force", action="store_true", help="Re-download and overwrite existing albums"
+        "--force",
+        action="store_true",
+        help="Re-download and overwrite existing albums",
     )
     parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Show verbose information"
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Show verbose information",
     )
     parser.add_argument("--debug", action="store_true", help="Show debug information")
     parser.add_argument(
-        "-h", "--help", action="help", help="Show this help message and exit"
+        "-h",
+        "--help",
+        action="help",
+        help="Show this help message and exit",
     )
     parser.add_argument(
         "--version",

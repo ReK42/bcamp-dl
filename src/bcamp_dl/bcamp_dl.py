@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Download your collection from Bandcamp."""
 import json
 import os
@@ -13,7 +12,7 @@ from string import Template
 from threading import Event
 from time import sleep
 from types import TracebackType
-from typing import Any, Type
+from typing import Any
 from unicodedata import normalize
 from urllib.parse import unquote
 
@@ -82,7 +81,7 @@ def sanitize_path(path: Path, replace: str = "_") -> Path:
     return Path(parent, filename + extension)
 
 
-class BandcampDownloader(object):
+class BandcampDownloader:
     """Download your collection from Bandcamp.
 
     To use, login to Bandcamp using one of the supported browsers. All albums in your
@@ -90,7 +89,7 @@ class BandcampDownloader(object):
     filename format selected.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         username: str = "",
         browser: str = "",
@@ -102,21 +101,22 @@ class BandcampDownloader(object):
         pause: float = 1.0,
         max_retries: int = 5,
         retry_wait: float = 5.0,
+        *,  # Following arguments are keyword arguments
         force: bool = False,
         verbose: bool = False,
         debug: bool = False,
-    ):
+    ) -> None:
         if not username:
             raise ValueError("username is required")
         if browser not in SUPPORTED_BROWSERS:
             raise ValueError(f"browser {browser} not supported")
         if threads < 1 or threads > MAX_THREADS:
             raise ValueError(f"threads must be between 1 and {MAX_THREADS}")
-        if pause < 0.0:
+        if pause < 0:
             raise ValueError("pause must be positive")
         if max_retries < 1:
             raise ValueError("max_retries must be greater than or equal to 1")
-        if retry_wait < 0.0:
+        if retry_wait < 0:
             raise ValueError("retry_wait must be positive")
 
         self.username = username
@@ -159,7 +159,7 @@ class BandcampDownloader(object):
 
         if self.force and self.verbose:
             self.view.console.print(
-                "Force flag set, existing files will be overwritten."
+                "Force flag set, existing files will be overwritten.",
             )
 
         if cookie_path:
@@ -176,7 +176,7 @@ class BandcampDownloader(object):
 
     def __exit__(
         self,
-        exc_type: Type[BaseException] | None,
+        exc_type: type[BaseException] | None,
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
@@ -187,12 +187,12 @@ class BandcampDownloader(object):
         self._get_albums()
         if not self.links:
             self.view.console.print(
-                f"ERROR: No album links found for user {self.username}."
+                f"ERROR: No album links found for user {self.username}.",
             )
             return 1
         if self.verbose:
             self.view.console.print(
-                f"Found {len(self.links)} links in {self.username}'s collection."
+                f"Found {len(self.links)} links in {self.username}'s collection.",
             )
             self.view.console.print("Starting album downloads...")
         self.view.console.print("To cancel, press CTRL+BREAK")
@@ -209,16 +209,26 @@ class BandcampDownloader(object):
             self.view.console.print("Done")
         return 0
 
-    def _get_pagedata(self, url) -> dict[str, Any]:
-        with requests.get(url, cookies=self.cookies) as resp:  # type: ignore
+    def _get_pagedata(self, url: str) -> dict[str, Any]:
+        with requests.get(
+            url,
+            cookies=self.cookies,  # type: ignore[arg-type]
+            timeout=15.0,
+        ) as resp:
             resp.raise_for_status()
             soup = BeautifulSoup(
-                resp.text, "html.parser", parse_only=SoupStrainer("div", id="pagedata")
+                resp.text,
+                "html.parser",
+                parse_only=SoupStrainer("div", id="pagedata"),
             )
             div = soup.find("div")
         if not div:
-            raise IOError(f"No div#pagedata found at {url}")
-        return json.loads(unescape(div.get("data-blob")))  # type: ignore
+            raise OSError(f"No div#pagedata found at {url}")
+        return json.loads(
+            unescape(
+                div.get("data-blob"),  # type: ignore[union-attr]
+            ),  # type: ignore[arg-type,type-var]
+        )
 
     def _get_albums(self) -> None:
         data = self._get_pagedata(URL_USER + self.username)
@@ -231,9 +241,14 @@ class BandcampDownloader(object):
                 "fan_id": user_id,
                 "count": collection_count,
                 "older_than_token": last_token,
-            }
+            },
         )
-        with requests.post(URL_COLLECTION, data=req, cookies=self.cookies) as resp:  # type: ignore
+        with requests.post(
+            URL_COLLECTION,
+            data=req,
+            cookies=self.cookies,  # type: ignore[arg-type]
+            timeout=15.0,
+        ) as resp:
             resp.raise_for_status()
             data = json.loads(resp.text)
             links += data["redownload_urls"].values()
@@ -247,11 +262,11 @@ class BandcampDownloader(object):
             data = self._get_pagedata(url)["download_items"][0]
             album = data["title"]
             if "downloads" not in data:
-                raise IOError(f"Album {album} has no downloads available")
+                raise OSError(f"Album {album} has no downloads available")
             if self.file_format not in data["downloads"]:
-                raise IOError(
+                raise OSError(
                     f"Album {album} does not have a download for format"
-                    f" {self.file_format}"
+                    f" {self.file_format}",
                 )
             url = data["downloads"][self.file_format]["url"]
             info = {k: data[k] for k in ALBUM_INFO_KEYS}
@@ -268,35 +283,44 @@ class BandcampDownloader(object):
             sleep(self.pause)
 
     def _download_album(
-        self, task_id: TaskID, url: str, info: dict[str, str], attempt: int = 1
+        self,
+        task_id: TaskID,
+        url: str,
+        info: dict[str, str],
+        attempt: int = 1,
     ) -> None:
         if self.event_stop.is_set():
             return None
         try:
-            with requests.get(url, cookies=self.cookies, stream=True) as resp:  # type: ignore
+            with requests.get(
+                url,
+                cookies=self.cookies,  # type: ignore[arg-type]
+                stream=True,
+                timeout=15.0,
+            ) as resp:
                 resp.raise_for_status()
                 content_length = int(resp.headers["content-length"])
                 match = re.search(
                     r"filename\*=UTF-8\'\'.*(\..*)$",
                     resp.headers["content-disposition"],
                 )
-                if match:
-                    extension = unquote(match.group(1))
-                else:
-                    extension = url.split("/")[-1]
+                extension = unquote(match.group(1)) if match else url.split("/")[-1]
                 path = sanitize_path(
                     Path(
                         self.directory,
                         self.filename_format.substitute(info) + extension,
-                    )
+                    ),
                 )
-                if path.exists():
-                    if not self.force and path.stat().st_size == content_length:
-                        if self.verbose:
-                            self.view.console.print(
-                                f"Skipping album, file already exists: {path}"
-                            )
-                        return None
+                if (
+                    path.exists()
+                    and not self.force
+                    and path.stat().st_size == content_length
+                ):
+                    if self.verbose:
+                        self.view.console.print(
+                            f"Skipping album, file already exists: {path}",
+                        )
+                    return None
                 path.parent.mkdir(parents=True, exist_ok=True)
                 with path.open(mode="wb") as f:
                     self.job_progress.reset(task_id, total=content_length)
@@ -307,15 +331,15 @@ class BandcampDownloader(object):
                         f.write(data)
                         self.job_progress.advance(task_id, advance=len(data))
                 if path.stat().st_size != content_length:
-                    raise IOError("File does not match expected size")
-        except IOError as e:
+                    raise OSError("File does not match expected size")
+        except OSError as e:
             if attempt < self.max_retries:
                 if self.verbose:
                     self.view.console.print(
                         f"Download attempt {attempt} of {self.max_retries} failed:"
-                        f" {url}"
+                        f" {url}",
                     )
                 sleep(self.retry_wait)
                 self._download_album(task_id, url, info, attempt=attempt + 1)
             else:
-                raise IOError("Max retries exceeded") from e
+                raise OSError("Max retries exceeded") from e
