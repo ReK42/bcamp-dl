@@ -39,10 +39,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - if: github.event.ref_type == 'tag'
-        uses: actions/checkout@v3
-      - if: github.event.ref_type != 'tag'
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Python
