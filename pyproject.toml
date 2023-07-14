@@ -102,17 +102,18 @@ show-source = true
 src = ["src"]
 select = ["ALL"]
 ignore = [
-    "D105",    # Missing docstring in magic method
-    "D107",    # Missing docstring in __init__
     "ANN101",  # Missing type annotation for self in method
     "ANN102",  # Missing type annotation for cls in method
+    "D105",    # Missing docstring in magic method
+    "D107",    # Missing docstring in __init__
+    "EXE001",  # Shebang is present but file is not executable
     "FBT002",  # Boolean default value in function definition
     "RET501",  # Do not explicitly return None in function if it is the only possible return value
 
+    "CPY",     # flake8-copyright
     "D203",    # Use D211 instead
     "D213",    # Use D212 instead
     "I001",    # Use black instead
-    "CPY",     # flake8-copyright
 
     "S",       # TODO: Fix and enable
     "BLE",     # TODO: Fix and enable
