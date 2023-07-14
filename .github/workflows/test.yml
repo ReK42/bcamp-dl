@@ -47,11 +47,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install .[tests]
-      - name: Format Code
-        run: black --check --diff --color src
-      - name: Lint
-        run: ruff --format github src
       - name: Check Types
         run: mypy src
+      - name: Lint
+        run: ruff --format github src
+      - name: Format Code
+        run: black --check --diff --color src
       - name: Run Tests
         run: bcamp-dl --version
