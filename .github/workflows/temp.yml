@@ -1,0 +1,24 @@
+---
+name: Temp
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  temp:
+    name: Temp
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get Release Name
+        id: release-name
+        run: |
+          export VERSION=$(echo ${{ github.ref_name }} |  sed -e 's/^release\/v//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION"
