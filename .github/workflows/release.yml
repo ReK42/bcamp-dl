@@ -1,11 +1,10 @@
 ---
-name: Build
+name: Release
 
 on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-      - main
+  push:
+    tags:
+      - "release/**"
 
 permissions:
   contents: read
@@ -28,21 +27,22 @@ jobs:
     name: Test
     uses: ./.github/workflows/test.yml
 
-  build:
-    name: Build
+  release:
+    name: Release
     needs:
       - test
     runs-on: ubuntu-latest
-    environment: build
+    environment: release
     permissions:
+      contents: write
       id-token: write
     steps:
-      - if: github.event.ref_type == 'tag'
-        uses: actions/checkout@v3
-      - if: github.event.ref_type != 'tag'
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
+      - name: Get Release Name
+        id: release-name
+        run: |
+          export VERSION=$(echo ${{ github.ref_name }} |  sed 's/^release\\///')
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -55,8 +55,13 @@ jobs:
       - name: Build
         run: |
           python -m build
-      - name: Publish
+      - name: Publish to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.release-name.outputs.name }}
+          generate_release_notes: true
+          files: "dist/*"
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           print-hash: true
-          repository-url: https://test.pypi.org/legacy/
