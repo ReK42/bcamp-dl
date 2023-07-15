@@ -3,8 +3,7 @@ name: Release
 
 on:
   push:
-    tags:
-      - "release/**"
+    tags: ["release/**"]
 
 permissions:
   contents: read
@@ -53,8 +52,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install .[build]
       - name: Build
-        run: |
-          python -m build
+        run: python -m build
       - name: Publish to GitHub
         uses: softprops/action-gh-release@v1
         with:

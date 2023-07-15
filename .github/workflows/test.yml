@@ -3,7 +3,6 @@ name: Test
 
 on:
   workflow_call:
-  push:
 
 permissions:
   contents: read
@@ -24,7 +23,6 @@ env:
 jobs:
   test:
     name: Test
-    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         python:
