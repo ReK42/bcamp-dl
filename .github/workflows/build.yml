@@ -48,12 +48,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Release Name
-        id: release-name
-        run: |
-          export VERSION=$(echo ${{ github.ref_name }} |  sed 's/^release\\/v//')
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -68,6 +62,15 @@ jobs:
       - name: Build
         run: python -m build
 
+      - name: Get Version
+        id: version
+        shell: bash
+        run: |
+          export VERSION=$(python -c "import sys;sys.path.append('src/bcamp_dl');from _version import version;print(version)")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]] || exit 1
+
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -81,7 +84,7 @@ jobs:
         with:
           template: ./.github/templates/pr-build.md
           vars: |
-            version: ${{ steps.release-name.outputs.version }}
+            version: ${{ steps.version.outputs.version }}
 
       - name: Update PR with Build
         if: ${{ github.event_name == 'pull_request_target' }}
