@@ -16,6 +16,8 @@ Download your collection from Bandcamp.
 pipx install bcamp-dl
 ```
 
+For developers: Merged pull requests will automatically create dev builds on [TestPyPI](https://test.pypi.org/project/bcamp-dl)
+
 ## Usage
 ```
 bcamp-dl --browser <BROWSER> --file-format <FORMAT> --directory <DIR> <USERNAME>
