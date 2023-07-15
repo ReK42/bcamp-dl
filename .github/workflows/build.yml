@@ -3,7 +3,10 @@ name: Build
 
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
+    branches: [main]
+    types: [closed]
+  push:
 
 permissions:
   contents: read
@@ -28,12 +31,15 @@ jobs:
 
   build:
     name: Build
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
     needs:
       - test
     runs-on: ubuntu-latest
     environment: build
     permissions:
       id-token: write
+      issues: write
+      pull-requests: write
     steps:
       - if: github.event.ref_type == 'tag'
         uses: actions/checkout@v3
@@ -41,20 +47,46 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Get Release Name
+        id: release-name
+        run: |
+          export VERSION=$(echo ${{ github.ref_name }} |  sed 's/^release\\/v//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.x
           cache: pip
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install .[build]
+
       - name: Build
-        run: |
-          python -m build
+        run: python -m build
+
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           print-hash: true
           repository-url: https://test.pypi.org/legacy/
+
+      - name: Render PR Template
+        id: pr-template
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: ./.github/templates/pr-build.md
+          vars: |
+            version: ${{ steps.release-name.outputs.version }}
+
+      - name: Update PR with Build
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.pr-template.outputs.result }}
+          reactions: rocket
