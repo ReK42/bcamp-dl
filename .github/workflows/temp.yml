@@ -16,9 +16,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Release Name
-        id: release-name
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+          cache: pip
+
+      - name: Install Dependencies
         run: |
-          export VERSION=$(echo ${{ github.ref_name }} |  sed -e 's/^release\/v//')
+          python -m pip install --upgrade pip
+          python -m pip install .[build]
+
+      - name: Build
+        run: python -m build
+
+      - name: Get Version
+        id: version
+        run: |
+          export VERSION=$(python -c "import sys;sys.path.append('src/bcamp_dl');from _version import version;print(version)")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION"
