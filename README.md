@@ -18,7 +18,7 @@ pipx install bcamp-dl
 ```
 
 ## Usage
-To use, login to Bandcamp using one of the supported browsers. All albums in your collection will be downloaded to the output directory, with subfolders, based on the filename format selected. If not specified, the defaults are to use Firefox, the current directory, and to download as MP3 V0.
+To use, login to Bandcamp using one of the supported browsers. All albums in your collection will be downloaded to the output directory, with subfolders, based on the filename format selected. If not specified, the defaults are to use Firefox and download as MP3 V0 to per-artist subfolders in the current directory.
 ```sh
 bcamp-dl --browser <BROWSER> --file-format <FORMAT> --directory <DIR> <USERNAME>
 ```
