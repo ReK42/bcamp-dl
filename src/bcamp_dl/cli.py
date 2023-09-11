@@ -122,7 +122,7 @@ def main() -> None:
         "--directory",
         type=Path,
         metavar="DIR",
-        default=Path("."),
+        default=Path(),
         help="Directory to download to, default: %(default)s",
     )
     parser.add_argument(
