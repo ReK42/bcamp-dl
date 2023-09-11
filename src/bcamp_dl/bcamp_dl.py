@@ -93,7 +93,7 @@ class BandcampDownloader:
         self,
         username: str = "",
         browser: str = "",
-        directory: Path = Path("."),
+        directory: Path = Path(),
         cookie_path: str = "",
         filename_format: str = "$artist/$artist - $title",
         file_format: str = "mp3-320",
