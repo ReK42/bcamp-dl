@@ -7,7 +7,7 @@ __all__ = []
 def export(defn: Any) -> None:  # noqa: ANN401
     """Module-level export decorator."""
     globals()[defn.__name__] = defn
-    __all__.append(defn.__name__)
+    __all__.append(defn.__name__)  # noqa: PYI056
     return defn
 
 
