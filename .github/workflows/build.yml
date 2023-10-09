@@ -80,7 +80,7 @@ jobs:
       - name: Render PR Template
         id: pr-template
         if: github.event_name == 'pull_request_target'
-        uses: chuhlomin/render-template@v1.7
+        uses: chuhlomin/render-template@v1.8
         with:
           template: ./.github/templates/pr-build.md
           vars: |
