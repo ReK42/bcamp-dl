@@ -55,7 +55,7 @@ tests = [
     "types-requests",
 ]
 build = [
-    "setuptools == 68.2.1",
+    "setuptools == 69.0.2",
     "setuptools-scm == 7.1.0",
     "build == 1.0.3",
     "twine == 4.0.2"
