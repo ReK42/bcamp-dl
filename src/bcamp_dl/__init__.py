@@ -1,4 +1,5 @@
 """Download your collection from Bandcamp."""
+
 from typing import Any
 
 __all__ = []

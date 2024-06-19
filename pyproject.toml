@@ -34,9 +34,9 @@ classifiers = [
 ]
 dependencies = [
     "browser-cookie3 == 0.19.1",
-    "bs4 == 0.0.1",
-    "requests == 2.32.2",
-    "rich == 13.7.0"
+    "bs4 == 0.0.2",
+    "requests == 2.32.3",
+    "rich == 13.7.1"
 ]
 
 [project.urls]
@@ -48,17 +48,17 @@ bcamp-dl = "bcamp_dl.cli:main"
 
 [project.optional-dependencies]
 tests = [
-    "black == 23.9.1",
-    "mypy == 1.7.1",
-    "ruff == 0.0.288",
+    "black == 24.4.2",
+    "mypy == 1.10.0",
+    "ruff == 0.4.9",
     "types-beautifulsoup4",
     "types-requests",
 ]
 build = [
-    "setuptools == 69.0.2",
-    "setuptools-scm == 7.1.0",
-    "build == 1.0.3",
-    "twine == 4.0.2"
+    "setuptools == 70.1.0",
+    "setuptools-scm == 8.1.0",
+    "build == 1.2.1",
+    "twine == 5.1.0"
 ]
 
 [build-system]
@@ -98,8 +98,10 @@ ignore_missing_imports = true
 
 [tool.ruff]
 cache-dir = ".cache/ruff"
-show-source = true
+output-format = "full"
 src = ["src"]
+
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "ANN101",  # Missing type annotation for self in method
@@ -122,8 +124,8 @@ ignore = [
     "TRY",     # TODO: Fix and enable
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 15

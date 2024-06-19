@@ -1,4 +1,5 @@
 """Download your collection from Bandcamp."""
+
 import json
 import os
 import re

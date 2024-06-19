@@ -54,7 +54,7 @@ jobs:
         run: mypy src
 
       - name: Lint
-        run: ruff --format github src
+        run: ruff check src
 
       - name: Format Code
         run: black --check --diff --color src
