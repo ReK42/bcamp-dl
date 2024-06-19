@@ -261,7 +261,7 @@ class BandcampDownloader:
             return None
         try:
             data = self._get_pagedata(url)["download_items"][0]
-            album = data["title"]
+            album = f"{data['artist']} - {data['title']}"
             if "downloads" not in data:
                 raise OSError(f"Album {album} has no downloads available")
             if self.file_format not in data["downloads"]:
