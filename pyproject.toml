@@ -50,7 +50,7 @@ bcamp-dl = "bcamp_dl.cli:main"
 tests = [
     "black == 24.4.2",
     "mypy == 1.10.0",
-    "ruff == 0.4.9",
+    "ruff == 0.5.2",
     "types-beautifulsoup4",
     "types-requests",
 ]
