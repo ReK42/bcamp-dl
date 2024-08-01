@@ -49,13 +49,13 @@ bcamp-dl = "bcamp_dl.cli:main"
 [project.optional-dependencies]
 tests = [
     "black == 24.4.2",
-    "mypy == 1.10.0",
-    "ruff == 0.4.9",
+    "mypy == 1.11.1",
+    "ruff == 0.5.5",
     "types-beautifulsoup4",
     "types-requests",
 ]
 build = [
-    "setuptools == 70.1.0",
+    "setuptools == 72.0.0",
     "setuptools-scm == 8.1.0",
     "build == 1.2.1",
     "twine == 5.1.1"
