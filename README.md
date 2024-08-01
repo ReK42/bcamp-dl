@@ -5,8 +5,6 @@
 [![License](https://img.shields.io/github/license/ReK42/bcamp-dl)](https://github.com/ReK42/bcamp-dl/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/ReK42/bcamp-dl/main?logo=github)](https://github.com/ReK42/bcamp-dl/commits/main)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/ReK42/bcamp-dl/build.yml?logo=github)](https://github.com/ReK42/bcamp-dl/actions)
-[![Linted by Ruff](https://img.shields.io/badge/linting-ruff-purple?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
-[![Code Style by Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Download your collection from Bandcamp.
 
@@ -31,7 +29,14 @@ git clone https://github.com/ReK42/bcamp-dl.git
 cd bcamp-dl
 python -m venv .env
 source .env/bin/activate
-python -m pip install --upgrade pip setuptools pre-commit
+python -m pip install --upgrade pip pre-commit
 pre-commit install
 pip install -e .[test]
+```
+
+To manually run tests:
+```sh
+mypy src
+ruff check src
+black --check src
 ```

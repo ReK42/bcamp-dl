@@ -1,5 +1,7 @@
 """Download your collection from Bandcamp."""
 
+from __future__ import annotations  # Enable PEP 604 on 3.9
+
 import json
 import os
 import re
@@ -12,8 +14,7 @@ from pathlib import Path
 from string import Template
 from threading import Event
 from time import sleep
-from types import TracebackType
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from unicodedata import normalize
 from urllib.parse import unquote
 
@@ -35,6 +36,15 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 from rich.table import Table
+
+
+if sys.version_info < (3, 11):
+    from typing_extensions import Self
+else:
+    from typing import Self
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 
 ALBUM_INFO_KEYS = [
@@ -171,7 +181,7 @@ class BandcampDownloader:
             func = getattr(browser_cookie3, self.browser)
             self.cookies = func(domain_name="bandcamp.com")
 
-    def __enter__(self) -> "BandcampDownloader":
+    def __enter__(self) -> Self:
         self.view.start(refresh=True)
         return self
 
