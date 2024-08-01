@@ -4,14 +4,32 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
-      time: "08:00"
-      timezone: UTC
+      interval: monthly
+    groups:
+      all:
+        applies-to: version-updates
+        patterns:
+          - "*"
   - package-ecosystem: pip
     directory: /
     schedule:
-      interval: weekly
-      day: monday
-      time: "08:00"
-      timezone: UTC
+      interval: monthly
+    groups:
+      development:
+        applies-to: version-updates
+        patterns:
+          - "mypy"
+          - "types-*"
+          - "ruff"
+          - "black"
+          - "setuptools"
+          - "setuptools-scm"
+          - "build"
+          - "twine"
+      minor-and-patch:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
