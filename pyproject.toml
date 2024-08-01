@@ -47,10 +47,10 @@ Issues = "https://github.com/ReK42/bcamp-dl/issues"
 bcamp-dl = "bcamp_dl.cli:main"
 
 [project.optional-dependencies]
-tests = [
-    "black == 24.4.2",
+test = [
     "mypy == 1.11.1",
     "ruff == 0.5.5",
+    "black == 24.4.2",
     "types-beautifulsoup4",
     "types-requests",
 ]

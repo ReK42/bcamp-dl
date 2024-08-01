@@ -33,5 +33,5 @@ python -m venv .env
 source .env/bin/activate
 python -m pip install --upgrade pip setuptools pre-commit
 pre-commit install
-pip install -e .[tests]
+pip install -e .[test]
 ```
